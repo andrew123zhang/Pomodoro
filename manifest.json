@@ -7,10 +7,16 @@
 			"matches": [
 				"<all_urls>"
 			],
-			"js": ["pomodoro.js"],
+			"js": ["block.js"],
 			"run_at": "document_start"
 		}
 	],
+	"web_accessible_resources": [
+		"blocked.html"
+	],
+	"background": {
+		"scripts": ["pomodoro.js"]
+	},
 	"browser_action": {
 		"default_title": "Pomodoro",
 		"default_popup": "popup.html"
