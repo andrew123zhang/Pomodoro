@@ -1,7 +1,6 @@
 # Pomodoro
-chrome ext. which implements the well-known Pomodoro Technique for productivity, focus, and concentration
+chrome extension which implements the well-known Pomodoro Technique for productivity, focus, and concentration
 
-The classic timing is something like 25 minutes periods of concentration 
-between 5 minute breaks.
+The classic set up is something like 5 minute breaks between 25 minute periods of concentration.
 
-This extenstion should block certain sites during that 25 + minute period.
+This extension blocks certain sites during that 25 (+) minute period.
