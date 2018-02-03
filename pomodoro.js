@@ -3,8 +3,8 @@
 
 var ticks = 0; //how many seconds have passed since we begun the app (opened chrome)
 var pomodoro = {
-    workTime: 25,//*60, //in ticks
-    breakTime: 5//*60 //minutes * ticks per minute
+    workTime: 25*60, //in ticks
+    breakTime: 5*60 //minutes * ticks per minute
 }
 
 var useWhitelist = false;
@@ -23,16 +23,21 @@ window.setInterval(function() {
     }
 }, 1000);
 
-function canAccess(hostname) {
+function blocked(hostname) {
     //TODO: handle whitelists, blacklists, etc
+    //Regex!
     return blacklist.indexOf(hostname) > -1;
+}
+
+function ticksToMinutes(t) {
+    return Math.round(t/60);
 }
 
 //Listen for messages, and then send back data
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.messageType == "block") {
-            if (canAccess(request.hostname)) {
+            if (blocked(request.hostname)) {
                 if (currentState == "work") {
                     if (ticks >= pomodoro.workTime) {
                         //Begin our break
@@ -54,22 +59,23 @@ chrome.runtime.onMessage.addListener(
         } else if (request.messageType == "pomodoroState") {
             sendResponse({state: currentState});
         } else if (request.messageType == "time") {
-            sendResponse({timeLeft: pomodoro.workTime - ticks});/*
             var time;
             var result = "";
             if (currentState == "work") {
                 time = pomodoro.workTime - ticks;
                 if (time <= 0) {
                     time = 0;
-                    result = time + " minutes of work left"
+                    result = "You may begin your break"
+                } else {
+                    result = ticksToMinutes(time).toString() + " minutes of work left"
                 }
             } else if (currentState == "break") {
                 time = pomodoro.breakTime - ticks;
-                result = time +  " minutes of break left"
+                result = ticksToMinutes(time).toString() +  " minutes of break left"
             }
-            sendResponse({timeLeft: result});*/
+            sendResponse({message: result});
         } else if (request.messageType == "workTime") {
-            sendResponse({timeLeft: pomodoro.workTime - ticks});
+            sendResponse({timeLeft: ticksToMinutes(pomodoro.workTime - ticks)});
         }
         sendResponse({}); 
     }
