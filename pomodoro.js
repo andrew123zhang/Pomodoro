@@ -26,7 +26,11 @@ window.setInterval(function() {
 function blocked(hostname) {
     //TODO: handle whitelists, blacklists, etc
     //Regex!
-    return blacklist.indexOf(hostname) > -1;
+    if (useWhitelist) {
+        return true;
+    } else {
+        return blacklist.indexOf(hostname) > -1;
+    }
 }
 
 function ticksToMinutes(t) {
@@ -56,8 +60,6 @@ chrome.runtime.onMessage.addListener(
                 //never block sites that aren't blacklisted
                 sendResponse({shouldBlock: "no"});
             }
-        } else if (request.messageType == "pomodoroState") {
-            sendResponse({state: currentState});
         } else if (request.messageType == "time") {
             var time;
             var result = "";
@@ -67,15 +69,26 @@ chrome.runtime.onMessage.addListener(
                     time = 0;
                     result = "You may begin your break"
                 } else {
-                    result = ticksToMinutes(time).toString() + " minutes of work left"
+                    if (time <= 60) {
+                        result = time + " seconds of work left"
+                    } else {
+                        result = ticksToMinutes(time) + " minutes of work left"
+                    }
                 }
             } else if (currentState == "break") {
                 time = pomodoro.breakTime - ticks;
-                result = ticksToMinutes(time).toString() +  " minutes of break left"
+                if (time <= 60) {
+                    result = time + " seconds of break left"
+                } else {
+                    result = ticksToMinutes(time) + " minutes of break left"
+                }
             }
-            sendResponse({message: result});
-        } else if (request.messageType == "workTime") {
-            sendResponse({timeLeft: ticksToMinutes(pomodoro.workTime - ticks)});
+            sendResponse({
+                message: result, 
+                state: currentState,
+                ticks: time,
+                workTime: pomodoro.workTime - ticks
+            });
         }
         sendResponse({}); 
     }
