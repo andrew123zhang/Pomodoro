@@ -22,4 +22,4 @@ function check() {
 
 //Perpetually check if break time is over
 check()
-window.setInterval(check, 10000);
+window.setInterval(check, 10000); //Runs check infinitely

@@ -6,12 +6,12 @@ var updatePopup = function() {
         messageType: "time", 
     }, function(response) {
         var msg = response.message;
-        document.getElementById("time").innerHTML = msg; //update HTML file
-        document.getElementById("state").innerHTML = response.state; //update HTML file
+        document.getElementById("time").innerHTML = msg; //update HTML
+        document.getElementById("state").innerHTML = response.state; //update HTML
         if (response.ticks <= 60) {
-            window.setTimeout(updatePopup, 1000);
+            window.setTimeout(updatePopup, 1000); //Update every second
         } else {
-            window.setInterval(updatePopup, 30000) // update every half- minute
+            window.setInterval(updatePopup, 30000) // update every half-minute
         }
     });
 }
