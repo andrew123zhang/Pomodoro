@@ -1,14 +1,12 @@
-//this runs once on each page
-
+//this runs once on each page, and blocks the site if it is to be blocked. Executes the block.
 
 function block() { 
-    //Good Programming practice: Encapsulate important, 
+    //    good programming practice: Encapsulate important, 
     //    distinct actions into functions
-    window.location = chrome.extension.getURL("blocked.html"); //Blocks current site
+    window.location = chrome.extension.getURL("blocked.html"); //Blocks current site by redirecting to local html file
 }
 
-//Send a message
-function check() {
+function check() { //Sends a message to pomodoro.js
     chrome.runtime.sendMessage({
         messageType: "block", 
         hostname: window.location.hostname
@@ -20,6 +18,5 @@ function check() {
     });
 }
 
-//Perpetually check if break time is over
-check()
+check(); //Perpetually check if break time is over
 window.setInterval(check, 10000); //Runs check infinitely

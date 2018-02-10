@@ -1,18 +1,19 @@
-//This runs in the background all the time
-//This tells everything else what to do
+//    This runs in the background all the time
+//    tells everything else what to do
 
 var ticks = 0; //how many seconds have passed since we begun the app (opened chrome)
+
+var currentState = "work"; //or "break"
+
 var pomodoro = {
     workTime: 25*60, //in ticks
-    breakTime: 5*60 //minutes * ticks per minute
+    breakTime: 5*60, //minutes * ticks per minute
+    useWhitelist: false,
+    blacklist: ["www.reddit.com", "www.facebook.com"],
+    whitelist: ["www.google.com"]
 }
 
-var useWhitelist = false;
-var blacklist = ["www.reddit.com"]
-var whitelist = ["www.google.com"]
-
-var currentState = "work" //or "break"
-
+//Kick off our global timer
 window.setInterval(function() {
     ticks += 1;
     if (currentState == "break") {
@@ -23,13 +24,13 @@ window.setInterval(function() {
     }
 }, 1000);
 
-function blocked(hostname) {
+function isBlocked(hostname) {
     //TODO: handle whitelists, blacklists, etc
     //Regex!
-    if (useWhitelist) {
-        return true;
+    if (pomodoro.useWhitelist) {
+        return pomodoro.whitelist.indexOf(hostname) == -1; //not in whitelist -> block
     } else {
-        return blacklist.indexOf(hostname) > -1;
+        return pomodoro.blacklist.indexOf(hostname) > -1; //in blacklist -> block
     }
 }
 
@@ -41,7 +42,7 @@ function ticksToMinutes(t) {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.messageType == "block") {
-            if (blocked(request.hostname)) {
+            if (isBlocked(request.hostname)) {
                 if (currentState == "work") {
                     if (ticks >= pomodoro.workTime) {
                         //Begin our break
@@ -53,11 +54,12 @@ chrome.runtime.onMessage.addListener(
                         sendResponse({shouldBlock: "yes"});
                     }
                 } else {
-                    //Allow if we are in a break state
+                    //    Allow all sites through if we are in a break state
+                    //    this eventuality should NEVER occur as if a site is blocked, the state is probably "work"
                     sendResponse({shouldBlock: "no"});
                 }
             } else {
-                //never block sites that aren't blacklisted
+                //don't block sites that are allowed
                 sendResponse({shouldBlock: "no"});
             }
         } else if (request.messageType == "time") {

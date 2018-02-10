@@ -12,7 +12,7 @@ var update = function() {
     }, function(response) {
         var time = response.workTime;
         if (time <= 0) {
-            //This means we are already past the period of work. The timer will restart once 
+            //    This means we are already past the period of work. The timer will restart once 
             //    you visit a blocked page.
             document.getElementById("msg").innerHTML = "You may now begin your break."; //update HTML file
         } else if (time <= 60) { 
