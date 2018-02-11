@@ -15,10 +15,10 @@ var pomodoro = {
 }
 
 chrome.storage.sync.get('pomodoro', function (obj) {
-    var x = obj.foo;
+    var x = obj.pomodoro.foo;
     if (x == "jer") {
-        pomodoro = obj;
-        console.log("Settings loaded:");
+        pomodoro = obj.pomodoro;
+        console.log("Settings loaded (sync):");
         console.log(pomodoro);
     } else {
         console.log("No settings loaded")
@@ -132,12 +132,12 @@ chrome.runtime.onMessage.addListener(
             sendResponse(pomodoro);
         } else if (request.messageType == "updatePomodoro") {
             pomodoro = request.pomodoro;
-            
+
             ticks = 0;
             currentState = "work";
 
             chrome.storage.sync.set({"pomodoro": pomodoro}, function() {
-                console.log("Settings saved");
+                console.log("Settings saved (sync)");
                 console.log(pomodoro);
             });
 

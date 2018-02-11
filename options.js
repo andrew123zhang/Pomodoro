@@ -64,8 +64,11 @@ function getList() {
 }
 
 $("#addItemButton").click(function() {
-    addItem($("#addItem").val());
-    $("#addItem").val("");
+    var val = $("#addItem").val();
+    if (val.length > 3) {
+        addItem($("#addItem").val());
+        $("#addItem").val("");
+    }
 });
 
 $("#save").click(function() {
