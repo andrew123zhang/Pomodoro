@@ -4,7 +4,7 @@ var whitelist = [];
 var blacklist = [];
 
 function addItem(item) {
-    var arrElem = "<div class='arrElem'><span class='siteName'>" + item + "</span><button class='delButton'>X</button></div>";
+    var arrElem = "<div class='arrElem'><span contenteditable class='siteName'>" + item + "</span> <button class='delButton'>X</button></div>";
     $("#listContainer").append(arrElem);
 }
 
