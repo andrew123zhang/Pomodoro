@@ -14,7 +14,8 @@ var update = function() {
         if (time <= 0) {
             //    This means we are already past the period of work. The timer will restart once 
             //    you visit a blocked page.
-            document.getElementById("msg").innerHTML = "You may now begin your break."; //update HTML file
+            document.getElementById("msg").innerHTML = "You may now begin your break." + "<a>Here is your page</a>"; //update HTML file
+            window.setTimeout(update, 10000); //update every 10 sec
         } else if (time <= 60) { 
             document.getElementById("time").innerHTML = time + " seconds left";
             window.setTimeout(update, 1000); //update every second

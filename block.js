@@ -19,4 +19,8 @@ function check() { //Sends a message to pomodoro.js
 }
 
 check(); //Perpetually check if break time is over
+
 window.setInterval(check, 10000); //Runs check infinitely
+document.onmousemove = function(e) {
+    check();
+}

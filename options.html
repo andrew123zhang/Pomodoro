@@ -2,10 +2,35 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Blocked</title>
+    <title>Pomoptions</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <style>
+
+    </style>
 </head>
 <body>
     <h1>Options</h1>
-    you found it!
+
+    <button id="save">Save options</button>
+
+    <h2>Time options</h2>
+
+    <p><label for="workTime">Work Time (Minutes):</label> <input type="number" name="workTime" id="workTime" /></p>
+    <p><label for="breakTime">Break Time (Minutes):</label> <input type="number" name="breakTime" id="breakTime" /></p>
+    
+    <h2>Blocking</h2>
+
+    <p><label for="useWhitelist">use whitelist:</label> <input type="checkbox" name="useWhitelist" id="useWhitelist" /></p>
+
+    <p>
+        <input type="text" name="addItem" id="addItem" />
+        <button id="addItemButton">Add item</button>
+    </p>
+
+    <div id="listContainer">
+        
+    </div>
+
+    <script src="options.js"></script>
 </body>
 </html>

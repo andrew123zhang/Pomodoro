@@ -7,20 +7,59 @@ var currentState = "work"; //or "break"
 
 var pomodoro = {
     workTime: 25*60, //in ticks
-    breakTime: 5*60, //minutes * ticks per minute
+    breakTime: 50*60, //minutes * ticks per minute
     useWhitelist: false,
     blacklist: ["www.reddit.com", "www.facebook.com"],
     whitelist: ["www.google.com"]
 }
 
+chrome.storage.sync.get('pomodoro', function (obj) {
+    if (!chrome.runtime.error) {
+        pomodoro = obj;
+        console.log("Settings loaded:");
+        console.log(pomodoro);
+    } else {
+        console.log("No settings loaded")
+    }
+});
+
+function ticksToMinutes(t) {
+    return Math.round(t/60);
+}
+
+var badgeText = "";
+var time;
+
 //Kick off our global timer
 window.setInterval(function() {
     ticks += 1;
+    
     if (currentState == "break") {
+        time = pomodoro.breakTime - ticks;
         if (ticks >= pomodoro.breakTime) {
             ticks = 0;
             currentState = "work";
+        } else {
+            chrome.browserAction.setBadgeBackgroundColor({color: "#19b721"}); //update icon badge to green
+            chrome.browserAction.setIcon({path: "icon-off.png"});
         }
+    } else {
+        time = pomodoro.workTime - ticks;
+        chrome.browserAction.setBadgeBackgroundColor({color: "#ad2806"}); //update icon badge to red
+        chrome.browserAction.setIcon({path: "icon-on.png"});
+    }
+
+    badgeText = "";
+    if (time <= 60) {
+        badgeText += time + "s";
+    } else {
+        badgeText += ticksToMinutes(time) + "m";
+    }
+
+    if (currentState == "work" && time <= 0) {
+        chrome.browserAction.setBadgeText({text: "Done"});
+    } else {
+        chrome.browserAction.setBadgeText({text: badgeText});
     }
 }, 1000);
 
@@ -32,10 +71,6 @@ function isBlocked(hostname) {
     } else {
         return pomodoro.blacklist.indexOf(hostname) > -1; //in blacklist -> block
     }
-}
-
-function ticksToMinutes(t) {
-    return Math.round(t/60);
 }
 
 //Listen for messages, and then send back data
@@ -90,6 +125,22 @@ chrome.runtime.onMessage.addListener(
                 state: currentState,
                 ticks: time,
                 workTime: pomodoro.workTime - ticks
+            });
+        } else if (request.messageType == "getPomodoro") {
+            sendResponse(pomodoro);
+        } else if (request.messageType == "updatePomodoro") {
+            pomodoro = request.pomodoro;
+
+            ticks = 0;
+            currentState = "work";
+
+            chrome.storage.sync.set({"pomodoro": pomodoro}, function() {
+                console.log("Settings saved");
+                console.log(pomodoro);
+            });
+
+            sendResponse({
+                message: "hi"
             });
         }
         sendResponse({}); 
