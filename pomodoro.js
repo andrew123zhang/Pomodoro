@@ -6,6 +6,7 @@ var ticks = 0; //how many seconds have passed since we begun the app (opened chr
 var currentState = "work"; //or "break"
 
 var pomodoro = {
+    foo: "jer", // Test for local storage
     workTime: 25*60, //in ticks
     breakTime: 50*60, //minutes * ticks per minute
     useWhitelist: false,
@@ -14,7 +15,8 @@ var pomodoro = {
 }
 
 chrome.storage.sync.get('pomodoro', function (obj) {
-    if (!chrome.runtime.error) {
+    var x = obj.foo;
+    if (x == "jer") {
         pomodoro = obj;
         console.log("Settings loaded:");
         console.log(pomodoro);
@@ -130,7 +132,7 @@ chrome.runtime.onMessage.addListener(
             sendResponse(pomodoro);
         } else if (request.messageType == "updatePomodoro") {
             pomodoro = request.pomodoro;
-
+            
             ticks = 0;
             currentState = "work";
 

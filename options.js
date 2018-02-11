@@ -76,6 +76,7 @@ $("#save").click(function() {
     }
 
     var pom = {
+        foo: "jer",
         workTime: $("#workTime").val() * 60,
         breakTime: $("#breakTime").val() * 60,
         useWhitelist: $("#useWhitelist").prop("checked"),
